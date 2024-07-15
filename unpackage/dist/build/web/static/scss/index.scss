@@ -1,0 +1,145 @@
+	.main {
+
+		// .state{
+		// 	width: 100%;
+		// 	// height: 20px;
+		// 	background-color: red;
+		// }
+		.pass0 {
+			width: 100%;
+			height: 75rpx;
+			// background-color: red;
+		}
+
+		.pass1 {
+			width: 100%;
+			height: 90rpx;
+			// background-color: red;
+		}
+
+		.logOn {
+			width: 100%;
+			height: 180rpx;
+
+			// background-color: blue;
+			&>view {
+				width: 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				padding: 0 40rpx;
+
+			}
+
+			.title1 {
+				font-size: 50rpx;
+				font-family: 'AlibabaPuHuiTi-3-85-Bold';
+				// font-weight: bold;
+				color: #E93030;
+				height: 70%;
+			}
+
+			.title2 {
+				font-family: 'AlibabaPuHuiTi-3-55-Regular';
+				font-size: 28rpx;
+				color: $uni-text-color-grey;
+			}
+		}
+
+		.pass1 {
+			display: flex;
+			flex-direction: row;
+			align-items: end;
+
+			.prompt {
+				width: 100%;
+				text-align: center;
+				color: #E93030;
+				font-size: 25rpx;
+				font-family: 'AlibabaPuHuiTi-3-55-Regular';
+			}
+		}
+
+		.form {
+			width: 100%;
+			height: 560rpx;
+			// background-color: bisque;
+			display: grid;
+			grid-template-rows: repeat(4, 1fr);
+
+			&>view {
+				width: auto;
+				padding: 25rpx 40rpx;
+				// background-color: royalblue;
+			}
+
+			.input2 {
+				position: relative;
+
+				.image {
+					position: absolute;
+					right: 80rpx;
+					top: 50rpx;
+					width: 40rpx;
+					height: 40rpx;
+
+					image {
+						width: 100%;
+						height: 100%;
+					}
+				}
+			}
+
+			.phone,
+			.password {
+				background-color: #f0f0f1;
+				border-radius: 15rpx;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				// padding-left: 45rpx;
+			}
+
+			.box_checkbox {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+
+				.context {
+					padding-left: 10rpx;
+					color: #E93030;
+					font-family: 'AlibabaPuHuiTi-3-65-Medium';
+				}
+
+				// background-color: olivedrab;
+				.checkbox {
+					transform: scale(0.8);
+
+				}
+			}
+
+			.button {
+				padding: 25rpx 60rpx;
+
+				.box {
+					width: 100%;
+					height: 100%;
+					background-color: #E93030;
+					border-radius: 15rpx;
+
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+
+					font-family: 'AlibabaPuHuiTi-3-65-Medium';
+					font-size: 32rpx;
+					color: white;
+				}
+
+			}
+
+		}
+	}

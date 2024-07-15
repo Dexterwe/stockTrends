@@ -1,0 +1,312 @@
+.out {
+	.head {
+		position: fixed;
+		z-index: 1000;
+	}
+
+	.content {
+		&>view {
+			width: 100%;
+		}
+
+		background-color: $uni-color-theme;
+
+		.top {
+			font-family: 'AlibabaPuHuiTi-3-65-Medium';
+			height: 230rpx;
+			display: grid;
+			grid-template-rows: 1fr 2fr;
+
+			&>view {
+				width: 100%;
+			}
+
+			.up {
+				display: grid;
+				grid-template-columns: 3fr 1fr;
+				padding-top: 40rpx;
+				.left {
+					padding-left: 30rpx;
+					display: flex;
+					align-items: center;
+					justify-content: flex-start;
+
+					&>view {
+						margin-right: 10rpx;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+					}
+
+					.icon {
+						width: 26rpx;
+						height: 26rpx;
+
+						image {
+							width: 100%;
+							height: 100%;
+						}
+					}
+.strategyName{
+	font-size: 1.2rem
+}
+					.strategyName,
+					.strategicTrendsText {
+						color: white;
+					}
+					
+					.strategicTrendsText {
+						padding: 0 7rpx;
+						width: auto;
+						height: 30rpx;
+						font-size: 22rpx;
+						// border: 1rpx solid white;
+						border-radius: 6rpx;
+					}
+					
+					.TrendsTextborder{
+						border: 1rpx solid white;
+					}
+
+				}
+
+				.right {
+					display: flex;
+					align-items: center;
+					justify-content: flex-end;
+					padding-right: 30rpx;
+
+					.modifyStrategyButtom {
+						width: 140rpx;
+						height: 45rpx;
+						border-radius: 10rpx;
+						background-color: #FFC7C7;
+
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						justify-content: center;
+
+						&>view {
+							display: flex;
+							align-items: center;
+							justify-content: center;
+						}
+
+						.modifyText {
+							color: $uni-color-theme;
+							font-size: 24rpx;
+						}
+
+						.modifyIcon {
+							width: 22rpx;
+							height: 22rpx;
+							// background-color: black;
+							image {
+								width: 100%;
+								height: 100%;
+							}
+						}
+					}
+				}
+			}
+
+			.text {
+				padding: 20rpx 30rpx;
+				font-size: 24rpx;
+				font-family: 'AlibabaPuHuiTi-3-55-Regular';
+				color: white;
+				line-height: 35rpx;
+				letter-spacing: 2rpx;
+			}
+		}
+
+		.botton {
+			border-top-left-radius: 20rpx;
+			border-top-right-radius: 20rpx;
+			background-color: white;
+			height: 100vh;
+			font-family: 'AlibabaPuHuiTi-3-65-Medium';
+
+			.cardTop {
+				width: 100%;
+				height: auto;
+				padding: 0 30rpx;
+
+				.cardTopBox {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					padding: 30rpx 0;
+					width: 100%;
+					height: 100%;
+					border-bottom: 1rpx solid $uni-line-segment-separate-grey;
+
+					.left {
+						.title {
+							font-size: 28rpx;
+						}
+						.countdown {
+							padding-top: 15rpx;
+							font-size: 24rpx;
+							color: $uni-text-color-grey;
+							font-family: 'AlibabaPuHuiTi-3-55-Regular';
+						}
+					}
+
+					.right {
+						display: flex;
+						flex-direction: row;
+						justify-content: end;
+						.box{
+							padding: 5rpx;
+							display: flex;
+							flex-direction: row;
+							// height: 20rpx;
+							.promptText {
+								width: auto;
+								height: auto;
+								padding: 0;
+								font-size: 24rpx;
+								color: $uni-text-color-grey;
+								padding-right: 20rpx;
+								font-family: 'AlibabaPuHuiTi-3-55-Regular';
+								
+								// display: flex;
+								// flex-direction: column;
+								// align-items: center;
+								// justify-content: center;
+							}
+
+							.icon {
+								width: 20rpx;
+								height: 20rpx;
+								image {
+									width: 120%;
+									height: 120%;
+								}
+							}							
+						}
+
+					}
+				}
+
+			}
+
+			.stockTable {
+				display: grid;
+				grid-template-columns: 1fr 3fr;
+				font-family: 'AlibabaPuHuiTi-3-55-Regular';
+
+				&>view,
+				scroll-view {
+					min-height: 200rpx;
+
+					.tableHead {
+						height: 80rpx;
+						width: 100%;
+						font-size: 26rpx;
+						color: $uni-text-color-grey;
+						// border-bottom: 1rpx solid $uni-line-segment-separate-grey;
+					}
+				}
+
+				.leftTable {
+					padding-left: 30rpx;
+
+					.tableHead {
+						display: flex;
+						align-items: center;
+						height: 100rpx;
+
+						.stockAbbreviation {
+							position: relative;
+						}
+						
+						.stockAbbreviation::after {
+						  content: '';
+						  position: absolute;
+						  left: 0;
+						  bottom: -30rpx;
+						  width: 91.5vw;
+						  height: 1rpx; 
+						  background-color: $uni-line-segment-separate-grey;
+						}
+						
+						.rightIcon{
+							width: 22rpx;
+							height: 22rpx;
+							image{
+								width: 120%;
+								height: 120%;
+							}
+							top: 4rpx;
+							left: 660rpx;
+							position: absolute;
+						}
+						
+					}
+
+					.stockAbbreviationList {
+						.stockAbbreviation {
+							padding-top: 20rpx;
+							padding-bottom: 20rpx;
+							height: 100rpx;
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+
+							&>view {
+								display: flex;
+								align-items: center;
+								justify-content: start;
+								width: 100%;
+							}
+
+							.top {
+								font-family: 'AlibabaPuHuiTi-3-55-Regular';
+								font-size: 26rpx;
+								height: auto;
+							}
+
+							.bottom {
+								font-size: 22rpx;
+								color: $uni-text-color-grey;
+							}
+						}
+
+					}
+
+				}
+
+				.rightTable {
+					width: 500rpx;
+					.tableHead {
+						.fieldList {
+							height: 100rpx;
+							width: 1280rpx;
+							display: grid;
+							// grid-template-columns: repeat(9, 1fr);
+							grid-template-columns:1fr 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+							&>view {
+								display: flex;
+								align-items: center;
+								justify-content: center;
+							}
+							.from-content {
+								font-weight: bold;
+							}
+							.field {
+								height: 100rpx;
+								padding: 15rpx 0;
+								.echartsBox {
+									width: 120rpx;
+									height: 100%;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

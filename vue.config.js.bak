@@ -1,0 +1,13 @@
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://www.5quant.com',  // 目标服务器地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+  }
+};
