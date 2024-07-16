@@ -1,6 +1,6 @@
 <template>
 	<view class="out">
-		<view class="box">
+		<view class="box" @click="goStrategyDetails">
 			<view class="card">
 				<view class="top">
 					<view class="left">
@@ -53,7 +53,7 @@
 		.box{
 			padding-top: 20rpx;
 			width: 100%;
-			height: 240rpx;
+			min-height: 240rpx;
 			.card{
 				background-color: white;
 				border-radius: 20rpx;
@@ -114,7 +114,10 @@
 						align-items: center;
 						justify-content: end;
 						padding-right: 40rpx;
+						position: relative;
 						.image{
+							position: absolute;
+							bottom: 22px;
 							width: 20rpx;
 							height: 20rpx;
 							image{

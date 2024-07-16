@@ -17,14 +17,14 @@
 			<view class="right">
 				<view class="box" @click="renewFun">
 					<view class="icon">
-						<image src="../../static/images/renewIcon.png" mode="aspectFit"></image>
+						<image  src="../../static/images/renewIcon.png" mode="aspectFit"></image>
 					</view>
 					<view class="text">更新</view>
 				</view>
 				
 				<view class="box" @click="exportFun">
 					<view class="icon">
-						<image src="../../static/images/exportIcon.png" mode="aspectFit"></image>
+						<image  src="../../static/images/exportIcon.png" mode="aspectFit"></image>
 					</view>
 					<view class="text">导出</view>
 				</view>
@@ -34,13 +34,18 @@
 		
 		<!-- 卡片 -->
 		<historicalCard-component 
+			v-if="historicalSelectionList.length>0"
 			:entityList="item.symbols" 
 			:time="item.touch_date"
 			v-for="item in historicalSelectionList"
 			@clickRenew="renewFun(item.id)" 
 			@clickExport="exportFun(item.id)">
 		</historicalCard-component>
-		
+		<view style="width: 100%;height: 50vh; display: flex;align-items: center; justify-content: center;" v-else-if="showNoData">
+			<view class="">
+				暂无数据
+			</view>
+		</view>
 		
 		<!-- 右下角按钮 -->
 		<customerServiceButton-component @customerService="isMaskShow = !isMaskShow">
@@ -71,14 +76,12 @@
 </template>
 <script setup>
 	import {onMounted, ref} from 'vue';
-	import {onLoad} from '@dcloudio/uni-app';
+	import {onLoad, onReachBottom} from '@dcloudio/uni-app';
 	import {requestFun} from '@/static/js/common.js'
 	
 	// 计算头部高度
 	const BarHeight = ref(0);
-	let statusBarHeight = 0;
-	let tmp = uni.getSystemInfoSync().statusBarHeight
-	statusBarHeight = (tmp == 0 ? 35 : tmp)
+	let statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 	BarHeight.value = statusBarHeight + uni.rpx2px(80);
 	// 
 	const ltitle = ref('');
@@ -86,6 +89,8 @@
 	let lToken = '';
 	
 	let lId = '';
+	
+	let page = 1;
 	
 	const historicalSelectionList = ref([]);
 	
@@ -103,8 +108,11 @@
 	
 	let currentlyId = '';
 	
-	onMounted(()=>{
-
+	
+	
+	onReachBottom(()=>{
+		page++;
+		loadHistoricalSelectionList();
 	})
 		
 	// 关闭 RenewHistory 打开 NowRenewHistoryShow
@@ -148,43 +156,56 @@
 	
 	const clickRegain = ()=>{
 		uni.navigateTo({
-			url:'/pages/strategyDetails/strategyDetails' + '?id=' + lId + '&token=' + lToken
+			url:'/pages/strategyDetails/strategyDetails' + '?id=' + lId 
 		})
 	}
-	
+	const showNoData = ref(false);
 	onLoad((options)=>{
+		uni.setNavigationBarTitle({title: '历史回测入选'})
 		const {id, token, title} = options;
 		ltitle.value = title;
 		lId = id;
-		if (token){
+		lToken = token;
+		
+		if ( uni.getStorageSync('token')){
 			lToken = uni.getStorageSync('token');
-			uni.showLoading({
-				title:'加载中'
-			})
-			loadHistoricalSelectionList(id, uni.getStorageSync('token'))
+			loadHistoricalSelectionList()
 		}else{
 			uni.showToast({
 				title:'无法获取数据',
 				icon:'error'
 			})
+			uni.navigateTo({url:'/pages/index/index'})
 		}
+		
 	})
+	
+	
 	
 	setTimeout(() => {
 		uni.hideLoading()
 	}, 1500)
 	
-	const loadHistoricalSelectionList = (id, token) => {
+	const loadHistoricalSelectionList = () => {
+		uni.showToast({
+			title:'加载中',
+			icon:'loading',
+			duration:500
+		})
 		const obj = {
 			header_:{
-				Authorization:token
+				Authorization:lToken
+			},
+			data_:{
+				page
 			},
 			method_:'GET',
-			url_:'/symbols/list/days/' + id
+			url_:'/symbols/list/days/' + lId
 		}
 		
 		requestFun(obj).then(res => {
 			const {statusCode} = res;
+			showNoData.value = true
 			if (statusCode != 200){
 				uni.showToast({
 					title:'无法获取数据',
@@ -192,7 +213,8 @@
 				})
 				return;
 			}
-			historicalSelectionList.value = res.data.data.list;
+			historicalSelectionList.value = historicalSelectionList.value.concat(res.data.data.list);
+			// historicalSelectionList.value = res.data.data.list;
 		})
 	}
 </script>
@@ -247,9 +269,13 @@
 					display: flex;
 					flex-direction: row;
 					.icon{
+						position: relative;
 						width: 22rpx;
 						height: 22rpx;
 						image{
+							position: absolute;
+							top: 6rpx;
+							left: 3rpx;
 							width: 100%;
 							height: 100%;
 						}

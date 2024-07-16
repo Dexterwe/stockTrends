@@ -1,14 +1,14 @@
 export const requestFun = async function(obj) {
 	const {data_, header_, method_, url_} = obj;
 	const res = await uni.request({
-		url:'http://h5.5quant.com/api/rest' + url_,
+		url:'/api/rest' + url_,
 		data:{
 		...data_,
 		'verification_key':'1fmf23',
 		'verification_code':'12td3'
 		},
 		header:{
-			...header_
+			Authorization: uni.getStorageSync('token')
 		},
 		method:method_
 	})

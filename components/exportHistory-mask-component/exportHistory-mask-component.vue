@@ -33,9 +33,21 @@
 		emits('clonExportHistoryMask');
 	}
 	const clickSend = ()=>{
-		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 		const bool = emailRegex.test(mailbox.value)
-		if(mailbox.value.length==0&&!bool)return
+		if(mailbox.value.length==0){
+			uni.showToast({
+				title:'请输入邮箱地址!',
+				icon:'error'
+			})
+		}else if(!bool){
+			uni.showToast({
+				title:'邮箱格式错误!',
+				icon:'error'
+			})
+		}
+		if(mailbox.value.length==0||!bool)return
 		emits('sendMailbox', mailbox.value);
 	}
 	

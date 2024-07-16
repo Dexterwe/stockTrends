@@ -45,7 +45,9 @@
 						</view>
 					</view>
 				</view>
-				<view class="text">{{headObj.description}}</view>
+				<scroll-view scroll-y="true" style="height: 4rem;">
+					<view class="text">{{headObj.description}}</view>
+				</scroll-view>
 			</view>
 			<view class="botton">
 				
@@ -70,7 +72,7 @@
 					
 				</view>
 				
-				<view class="stockTable">
+				<view class="stockTable" v-if="selectedList.length>0">
 					<view class="leftTable">
 						<view class="tableHead">
 							<view class="stockAbbreviation">
@@ -128,13 +130,13 @@
 								<view class="field from-content" 
 									:style="{color: item.realtime.pct_chg < 0 ? '#5B9244' : '#DE433F'}">
 										
-									{{item.realtime.pct_chg > 0 ? '+' : (item.realtime.pct_chg < 0 ? '-' : '')}}
+									{{item.realtime.pct_chg > 0 ? '+' : (item.realtime.pct_chg < 0 ? '' : '')}}
 									{{item.realtime.pct_chg}}%
 									
 								</view>
 								
 								<!-- 成交量 -->
-								<view class="field from-content" :style="{color: item.realtime.pct_chg < 0 ? '#5B9244' : '#DE433F'}">>{{item.realtime.vol}}万</view>
+								<view class="field from-content" :style="{color: item.realtime.pct_chg < 0 ? '#5B9244' : '#DE433F'}">{{item.realtime.vol}}万</view>
 								
 								<!-- 成交额 -->
 								<view class="field from-content" 
@@ -170,23 +172,27 @@
 						</view>
 					</scroll-view>
 				</view>
+				<view style="width: 100%;height: 50vh; display: flex;align-items: center; justify-content: center;" v-else-if="showNoData">
+					<view class="">
+						暂无数据
+					</view>
+				</view>
 			</view>
+			
 		</view>
 		
 	</view>
 
 </template>
 <script setup>
-	import {ref, onMounted, watch, onUnmounted} from 'vue';
+	import {ref, onMounted, watch, onUnmounted, nextTick} from 'vue';
 	import * as echarts from 'echarts';
 	import {onLoad} from '@dcloudio/uni-app';
 	import {requestFun} from '@/static/js/common.js';
 	
 	// 
 	const BarHeight = ref(0);
-	let statusBarHeight = 0;
-	let tmp = uni.getSystemInfoSync().statusBarHeight
-	statusBarHeight = (tmp == 0 ? 35 : tmp)
+	let statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 	BarHeight.value = statusBarHeight + uni.rpx2px(80);
 	// 
 		
@@ -200,7 +206,7 @@
 	
 	const selectedList = ref([]);
 	
-	const timer = ref(30);
+	const timer = ref(30);	
 	
 	let echartsListData = [];
 	
@@ -213,13 +219,11 @@
 			timer.value--;
 			if (timer.value == 0){
 				timer.value = 30;
-				
 				// uni.reLaunch({
 				//   url:'/pages/strategyDetails/strategyDetails' + '?id=' + lId 
 				// });
 				init()
 				countNum.value++
-				startTimer();
 			}
 		}, 1000)
 		
@@ -227,13 +231,15 @@
 	};
 	
 	onMounted(()=>{
-		startTimer();
+		startTimer();	
+		// document.title = '实时选股'
 	})
 
 	const clearTimer = () => {
 	  if (timer_.value) {
 		clearInterval(timer_.value);
 		timer_.value = null;
+		timer.value = 30
 	  }
 	};
 	
@@ -242,30 +248,30 @@
     clearTimer();
   });
   
-	setTimeout(() => {
+	const initEcharts = ()=>{
 		echartsListData.forEach(item => {
 			const chartDom = document.getElementById('k' + item.id);
 			drawEcharts(generateKLineData(item.klines), chartDom);
 		})
-		
-		uni.hideLoading()
-	}, 2000)
+	}
 		
 	const clickRefresh = ()=>{
+		clearTimer()
+		startTimer()
 		countNum.value = 0
 		init()
 	}
 	const goHistoricalSelection = (id)=>{
 		clearTimer();
 		uni.navigateTo({
-			url:'/pages/historicalSelection/historicalSelection' + '?id=' + lId + '&token=' + lToken + '&title=' + headObj.value.title
+			url:'/pages/historicalSelection/historicalSelection' + '?id=' + lId + '&title=' + headObj.value.title
 		})
 	}	
 	
 	const regainPage = ()=>{
 		clearTimer();
 		uni.navigateTo({
-			url:'/pages/strategyList/strategyList' + '?token=' + lToken
+			url:'/pages/strategyList/strategyList' 
 		})
 	}
 	
@@ -333,15 +339,16 @@
 		const {id, token} = options;
 		activeId.value = id
 		init()
+		uni.setNavigationBarTitle({title: '实时选股'})
+		uni.showLoading({
+			title:'加载中'
+		})
 	})
-		
+	const showNoData = ref(false)
 	const init = ()=>{
 		if (uni.getStorageSync('token')){
 			lToken = uni.getStorageSync('token');
 			lId = activeId.value;
-			uni.showLoading({
-				title:'加载中'
-			})
 			loadHeadData(activeId.value, uni.getStorageSync('token'))
 			loadTableData(activeId.value, uni.getStorageSync('token'))
 		}else{
@@ -349,6 +356,7 @@
 				title:'无法获取数据',
 				icon:'error'
 			})
+			uni.navigateTo({url:'/pages/index/index'})
 		}
 	}
 	const loadHeadData = (id, token)=>{
@@ -407,9 +415,11 @@
 						klines:item.klines,
 						id:item.id
 					};
-				})				
+				})	
+				nextTick(()=>{initEcharts()})
 			}
 		uni.hideLoading()
+		showNoData.value = true
 		})
 	}
 	
@@ -418,6 +428,14 @@
 <style lang="scss">
 	@import url(@/uni.scss);
 	@import url(@/static/scss/strategyDetails.scss);
+	// .passBotton{
+	// 	width: 100%;
+	// 	min-height: 50vh;
+	// 	// background-color: #F6F6F6;
+	// 	display: flex;
+	// 	align-items: center;
+	// 	justify-content: center;
+	// }
 </style>
 
 

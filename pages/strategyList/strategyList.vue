@@ -9,6 +9,7 @@
 			</titleBar-component>
 		</view>
 		<view class="pass" :style="{height: BarHeight + 'px'}"></view>
+		
 		<customerService-mask-component @cloneCustomerServiceMask="isMaskShow = !isMaskShow" v-show="isMaskShow">
 		</customerService-mask-component>
 		
@@ -18,6 +19,7 @@
 		<view class="content">
 			
 			<strategyOverview-component v-for="item in strategyList"
+				v-if="strategyList.length>0"
 				@goStrategyDetailsEvent="goStrategyDetails(item.id)"
 				:colorNumber="item.tag == '强势' ? 0 : 1">
 				
@@ -33,7 +35,11 @@
 					{{item.description}}
 				</template>
 			</strategyOverview-component>
-			
+			<view class="passBotton" v-else-if="showNoData">
+				<view class="">
+					暂无数据
+				</view>
+			</view>
 			
 			<!-- <view class="passBotton"></view> -->
 		</view>
@@ -42,25 +48,26 @@
 </template>
 <script setup>
 	import {ref, onMounted} from 'vue';
-	import {onLoad} from '@dcloudio/uni-app';
+	import {onLoad, onReachBottom} from '@dcloudio/uni-app';
 	import {requestFun} from '@/static/js/common.js';
+	
 	
 	// 
 	const BarHeight = ref(0);
-	let statusBarHeight = 0;
-	let tmp = uni.getSystemInfoSync().statusBarHeight
-	statusBarHeight = (tmp == 0 ? 35 : tmp)
+	let statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 	BarHeight.value = statusBarHeight + uni.rpx2px(80);
 	//
 	
 	let lToken = '';
+	
+	let page = 1;
 	
 	const strategyList = ref([]);
 	
 	const isMaskShow = ref(false);
 	const goStrategyDetails = (id)=>{
 		uni.navigateTo({
-			url:'/pages/strategyDetails/strategyDetails' + '?id=' + id + '&token=' + lToken
+			url:'/pages/strategyDetails/strategyDetails' + '?id=' + id
 		})
 	}
 	
@@ -70,18 +77,16 @@
 		})
 	}
 	
-	// setTimeout(() => {
-	// 	// uni.hideLoading()
-	// }, 1000)
+	onReachBottom(()=>{
+		page++;
+		loadData();
+	})
 	
 	onMounted(()=>{
-		uni.showToast({
-			title:'加载中',
-			icon:'loading'
-		})
 	})
 	
 	onLoad((options)=>{
+		uni.setNavigationBarTitle({title: '策略中心'})
 		const {token} = options;
 		if (uni.getStorageSync('token')){
 			lToken = uni.getStorageSync('token');
@@ -91,14 +96,24 @@
 				title:'无法获取数据',
 				icon:'error'
 			})
+			uni.navigateTo({url:'/pages/index/index'})
 		}
 		
 	})
-	
-	const loadData = (token)=>{
+	const showNoData = ref(false)
+	const loadData = ()=>{
+		uni.showToast({
+			title:'加载中',
+			icon:'loading',
+			duration:500
+		})
+		
 		const obj = {
 			header_:{
-				Authorization:token
+				Authorization:lToken
+			},
+			data_:{
+				page
 			},
 			method_:'GET',
 			url_:'/strategy/list/'
@@ -106,6 +121,7 @@
 		
 		requestFun(obj).then(res => {
 			const {statusCode} = res;
+			showNoData.value = true
 			if (statusCode != 200){
 				uni.showToast({
 					title:'无法获取数据',
@@ -114,9 +130,10 @@
 				return;
 			}
 			const {list} = res.data.data;
-			strategyList.value = list
+			strategyList.value = strategyList.value.concat(list);
 		})
 	}
+	
 </script>
 
 <style lang="scss" scoped>
@@ -136,7 +153,10 @@
 		.passBotton{
 			width: 100%;
 			min-height: 100vh;
-			background-color: #F6F6F6;
+			// background-color: #F6F6F6;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 		}
 	}
 </style>

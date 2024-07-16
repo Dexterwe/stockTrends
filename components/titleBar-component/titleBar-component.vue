@@ -7,7 +7,8 @@
 				</view>
 			</view>
 			<view class="middle">
-				<slot name="text"></slot>
+					<slot name="text"></slot>
+				
 			</view>
 			<view class="right"></view>
 		</view>
@@ -33,7 +34,7 @@
 			&>view{
 				width: 100%;
 				height: 100%;
-				display: flex;
+				// display: flex;
 			}
 			.left{
 				display: flex;
@@ -50,11 +51,14 @@
 				}
 			}
 			.middle{
+				width: 11rem;
 				font-family: 'AlibabaPuHuiTi-3-65-Medium';
 				font-size: 1.1rem;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
+				text-align: center;
+				line-height: 2.3rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 		}
 	}

@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-	import { ref, computed } from 'vue'
+	import { ref, computed, onMounted } from 'vue'
 	import {requestFun} from '../../static/js/common.js'
 	import {onLoad} from '@dcloudio/uni-app';
 	
@@ -90,16 +90,16 @@
 			icon:'loading'
 		})
 		
-		const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-		const bo1 = password.value.length>6;
+		// const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+		// const bo1 = password.value.length>6;
 		
-		const phoneRegex = /^1[3-9]\d{9}$/;
-		const bo2 = phoneRegex.test(phone.value);
+		// const phoneRegex = /^1[3-9]\d{9}$/;
+		// const bo2 = phoneRegex.test(phone.value);
 		
-		if(!(bo1 && bo2)){
-			promptInfo.value = '电话或密码格式不正确';
-			return;
-		}
+		// if(!(bo1 && bo2)){
+		// 	promptInfo.value = '电话或密码格式不正确';
+		// 	return;
+		// }
 		
 		// 13666698761
 		// Wukuan888
@@ -117,7 +117,7 @@
 			const {statusCode} = res
 				if (statusCode!= 200){
 					const {data:{message}} = res
-					promptInfo.value = '电话或密码错误'
+					promptInfo.value = '账号或密码错误'
 				}else{
 					const {meta:{access_token}} = res.data.data
 					const token = 'Bearer' + access_token;
@@ -142,6 +142,7 @@
 	
 	
 	onLoad((options)=>{
+		uni.setNavigationBarTitle({title: '用户登录'})
 		const token = uni.getStorageSync('token')
 		if (token){
 			const phone1 = uni.getStorageSync('phone')
@@ -149,6 +150,9 @@
 			phone.value  = phone1;
 			password.value = password1;
 		}
+	})
+	onMounted(()=>{
+		// document.title = '用户登录'
 	})
 	
 	//切换图片显示

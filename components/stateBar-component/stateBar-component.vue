@@ -14,7 +14,6 @@
 <script setup>
 	import { ref } from 'vue';
 	const statusBarHeight = ref(0);
-	const tmp = uni.getSystemInfoSync().statusBarHeight
-	statusBarHeight.value = (tmp == 0 ? 35 : tmp)
+	statusBarHeight.value = uni.getSystemInfoSync().statusBarHeight
 </script>
 
